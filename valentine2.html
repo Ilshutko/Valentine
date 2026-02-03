@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Полина, будешь моей валентинкой?</title>
+  <style>
+    :root{
+      --bg1:#0f1020; --bg2:#241136;
+      --card:#ffffff10; --card2:#ffffff14;
+      --text:#f4f5ff; --muted:#c9c9df;
+      --accent:#ff4d7d; --accent2:#7c4dff;
+      --stroke: rgba(255,255,255,.14);
+      --shadow: 0 20px 70px rgba(0,0,0,.45);
+      --radius: 22px;
+    }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 15% 10%, rgba(255,77,125,.26), transparent 60%),
+        radial-gradient(900px 520px at 85% 25%, rgba(124,77,255,.24), transparent 58%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom));
+    }
+    .wrap{ width:min(520px, 100%); }
+    .card{
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .topbar{
+      padding:14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--muted);
+      font-size: 13px;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 16px rgba(255,77,125,.55);
+    }
+    .content{ padding:18px 16px 18px; }
+    h1{
+      margin: 2px 0 10px;
+      font-size: clamp(28px, 7vw, 42px);
+      line-height: 1.06;
+      letter-spacing: -0.4px;
+    }
+    .subtitle{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: clamp(14px, 3.8vw, 16px);
+      line-height: 1.45;
+    }
+
+    .panel{
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .field{ display:flex; flex-direction:column; gap:8px; margin-bottom: 12px; }
+    label{ font-size: 12.5px; color: rgba(201,201,223,.95); }
+
+    input{
+      width:100%;
+      padding: 13px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+      font-size: 15px;
+    }
+    input::placeholder{ color: rgba(244,245,255,.55); }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      margin-top: 10px;
+    }
+
+    button{
+      flex:1 1 50%;
+      border:none;
+      border-radius: 16px;
+      padding: 14px 14px;
+      font-size: 16px;
+      font-weight: 750;
+      min-height: 54px;
+      cursor:pointer;
+      user-select:none;
+      touch-action: manipulation; /* важно для тапа */
+      -webkit-user-select:none;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .yes{
+      color:#0b0b14;
+      background: linear-gradient(90deg, var(--accent), #ff7aa0);
+      box-shadow: 0 10px 26px rgba(255,77,125,.25);
+    }
+    .no{
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+
+    .result{
+      display:none;
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
+    }
+    .result strong{ display:block; margin-bottom: 6px; }
+    .result a{
+      color:#ffd3df;
+      text-decoration:none;
+      border-bottom: 1px dashed rgba(255,211,223,.55);
+    }
+
+    .note{
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: rgba(201,201,223,.92);
+      line-height:1.35;
+    }
+
+    .footer{
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      color: rgba(201,201,223,.9);
+      font-size: 12.5px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <div class="badge"><span class="dot"></span>Для Полины</div>
+        <div class="badge" id="dateBadge"></div>
+      </div>
+
+      <div class="content">
+        <h1 id="title">Полина, будешь моей валентинкой?</h1>
+        <p class="subtitle" id="subtitle">
+          Я хочу провести этот день с тобой. Просто выбери вариант ниже.
+        </p>
+
+        <div class="panel">
+          <div class="field">
+            <label for="plan">План/идея (необязательно)</label>
+            <input id="plan" placeholder="Например: ужин + прогулка в 19:00" maxlength="70" />
+          </div>
+
+          <div class="field">
+            <label for="link">Ссылка (необязательно)</label>
+            <input id="link" placeholder="Например: ссылка на ресторан/карту" maxlength="200" inputmode="url" />
+          </div>
+
+          <div class="actions">
+            <button type="button" class="yes" id="yesBtn">Да</button>
+            <button type="button" class="no" id="noBtn">Нет</button>
+          </div>
+
+          <div class="result" id="resultBox" aria-live="polite"></div>
+
+          <div class="note">
+            Это просто открытка — ничего не отправляется автоматически.
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div>Открой на телефоне</div>
+        <div>и нажми кнопку</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // дата
+    const d = new Date();
+    const months = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+    document.getElementById("dateBadge").textContent =
+      `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+
+    const planEl = document.getElementById("plan");
+    const linkEl = document.getElementById("link");
+    const resultBox = document.getElementById("resultBox");
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"']/g, c => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
+    }
+    function showResult(html){
+      resultBox.style.display = "block";
+      resultBox.innerHTML = html;
+    }
+
+    // ВАЖНО: и click, и touchend — чтобы сработало на любом телефоне
+    function onYes(){
+      const plan = planEl.value.trim();
+      const link = linkEl.value.trim();
+      let extra = "";
+      if (plan) extra += `<div>План: <strong>${escapeHtml(plan)}</strong></div>`;
+      if (link) extra += `<div>Ссылка: <a href="${escapeHtml(link)}" target="_blank" rel="noopener">открыть</a></div>`;
+
+      showResult(`
+        <strong>Ура, Полина.</strong>
+        <div>Тогда это официально: ты моя валентинка.</div>
+        ${extra ? `<div style="margin-top:10px; color:rgba(201,201,223,.95)">${extra}</div>` : ""}
+      `);
+      document.getElementById("subtitle").textContent =
+        "Я очень рад. Давай сделаем этот день классным.";
+    }
+
+    function onNo(){
+      showResult(`
+        <strong>Понял, Полина.</strong>
+        <div>Спасибо за честный ответ. Я уважаю твоё решение и ценю тебя.</div>
+        <div style="margin-top:10px; color:rgba(201,201,223,.95)">
+          Если захочешь — можешь нажать «Да» в любой момент.
+        </div>
+      `);
+      document.getElementById("subtitle").textContent =
+        "Без давления. Главное — чтобы тебе было комфортно.";
+    }
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+
+    yesBtn.addEventListener("click", onYes);
+    yesBtn.addEventListener("touchend", (e) => { e.preventDefault(); onYes(); }, {passive:false});
+
+    noBtn.addEventListener("click", onNo);
+    noBtn.addEventListener("touchend", (e) => { e.preventDefault(); onNo(); }, {passive:false});
+  </script>
+</body>
+</html>
